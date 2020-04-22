@@ -3,17 +3,24 @@ CREATE database employees_db;
 
 USE employees_db;
 
-CREATE TABLE departments (
-  position INT NOT NULL,
-  artist VARCHAR(100) NULL,
-  song VARCHAR(100) NULL,
-  year INT NULL,
-  raw_total DECIMAL(10,4) NULL,
-  raw_usa DECIMAL(10,4) NULL,
-  raw_uk DECIMAL(10,4) NULL,
-  raw_eur DECIMAL(10,4) NULL,
-  raw_row DECIMAL(10,4) NULL,
-  PRIMARY KEY (position)
+CREATE TABLE employee (
+  id INT NOT NULL PRIMARY KEY,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  role_id INT NOT NULL FOREIGN KEY,
+  manager_id INT FOREIGN KEY,
+);
+
+CREATE TABLE role (
+  id INT NOT NULL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  salary DECIMAL(10,2) NOT NULL,
+  department_id INT NOT NULL FOREIGN KEY,
+);
+
+CREATE TABLE department (
+  id INT NOT NULL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
 );
 
 
