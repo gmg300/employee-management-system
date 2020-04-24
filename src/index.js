@@ -47,4 +47,17 @@ const menu = [
 // Actions
 const actions = {
 
-}
+};
+
+// MySQL Connection
+const connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+  
+    // Your username
+    user: 'root',
+  
+    // Your password
+    password: 'password',
+    database: 'playlist_db'
+  });
