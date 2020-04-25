@@ -64,14 +64,14 @@ const menu = [
 
 // Actions
 const actions = {
-  addDept: /* add */ function() {
+  addDept: function () {
     console.log("--- Add a department ---");
     inquirer
       .prompt([
         {
           type: "input",
           name: "dept_name",
-          message: "Enter Department name",
+          message: "Enter department name",
         },
       ])
       .then((res) => {
@@ -81,17 +81,25 @@ const actions = {
   },
   addRole: function () {
     inquirer
-      .prompt({
-        type: "input",
-        name: "artist",
-        message: "Enter an artist to search or nothing to get everything.",
-      })
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "Enter role title",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "Enter salary (number)",
+        },
+        {
+          type: "input",
+          name: "dept_id",
+          message: "Enter department id for role (see table)",
+        },
+      ])
       .then((res) => {
-        if (res.artist == "") {
-          playlist.getAllPlaylists();
-        } else {
-          playlist.getPlaylistsByColumn("artist", res.artist);
-        }
+        roles.addRole(res);
         setTimeout(ask, 200);
       });
   },
@@ -100,28 +108,24 @@ const actions = {
       .prompt([
         {
           type: "input",
-          name: "id",
-          message: "Enter an id to update.",
+          name: "name",
+          message: "Enter first and last name",
         },
         {
           type: "input",
-          name: "colval",
-          message: `Enter 'column|newvalue'`,
+          name: "role_id",
+          message: "Enter role id",
+        },
+        {
+          type: "input",
+          name: "manager_id",
+          message: "Enter manager id (if applicable)",
         },
       ])
       .then((res) => {
-        if (res.id == "") {
-          console.log("You must enter an id");
-          ask();
-        } else {
-          let update = {};
-          update[res.colval.split("|")[0]] = res.colval.split("|")[1];
-          /*
-                    res.colval.split('|') == ['column', 'newvalue']
-                    update['column'] = 'newvalue'
-                  */
-          playlist.updatePlaylist(res.id, update);
-        }
+          let first_name = res.name.split(" ")[0];
+          let last_name = res.name.split(" ")[1];
+          employees.addEmployee(first_name, last_name, res.role_id, res.manager_id);
         setTimeout(ask, 200);
       });
   },
@@ -250,7 +254,7 @@ const actions = {
 };
 
 function ask() {
-  inquirer.prompt(menu).then(function(choice) {
+  inquirer.prompt(menu).then(function (choice) {
     actions[choice.action]();
   });
 }

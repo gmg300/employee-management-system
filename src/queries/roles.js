@@ -4,13 +4,13 @@ class Roles {
   constructor(connection) {
     this.connection = connection;
   }
-  addRole(title, salary, dept_id) {
+  addRole(options) {
     this.connection.query(
       "INSERT INTO roles (title, salary, dept_id) VALUES (?, ?, ?)",
-      [title, salary, dept_id],
+      [options.title, options.salary, options.dept_id],
       function (err, res) {
         if (err) throw err;
-        console.log(chalk.green(`"${title}" added to roles`));
+        console.log(chalk.green(`"${options.title}" added to roles`));
       }
     );
   }
