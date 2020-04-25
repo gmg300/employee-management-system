@@ -4,17 +4,35 @@ class Employees {
   constructor(connection) {
     this.connection = connection;
   }
-  addEmployee(title, salary, dept_id) {
+  addRole(title, salary, dept_id) {
     this.connection.query(
-      "INSERT INTO departments (title, salary, dept_id)) VALUES (?)",
+      'INSERT INTO roles (title, salary, dept_id) VALUES (?, ?, ?)',
       [title, salary, dept_id],
-      callback
-    );
+      function(err, res) {
+        if (err) throw err;
+        console.log(chalk.green(`"${title}" added to roles`));
+      });
   }
-  viewEmployees() {}
+  viewRoles() {
+    this.connection.query(
+      `SELECT * FROM roles`,
+      function(err, res) {
+        if(err) throw err;
+        console.log(chalk.green("--- Roles ---"));
+        console.table(res);
+      });
+  }
   updateEmployeeRole() {}
   updateEmployeeManager() {}
-  deleteEmployee() {}
+  deleteRole(role_id) {
+    this.connection.query(
+      'DELETE FROM roles WHERE role_id = ?',
+      role_id,
+      function(err, res) {
+        if(err) throw err;
+        console.log(chalk.green(`Role #${role_id} deleted`));
+      });
+  }
 }
 
 function callback(err, res) {
