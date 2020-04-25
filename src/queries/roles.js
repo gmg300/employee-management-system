@@ -34,5 +34,5 @@ class Roles {
 }
 
 module.exports = {
-  Roles,
+  Roles
 };

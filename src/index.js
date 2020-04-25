@@ -12,41 +12,26 @@ let employees = require("./queries/employees");
 // Main Menu
 const menu = [
   {
-    type: "choice",
+    type: "list",
     name: "action",
     message: "What do you want to do?",
-    choices: ["add", "view", "update", "delete"],
-  },
-  {
-    type: "choice",
-    name: "add",
-    message: "What do you want to do?",
-    choices: ["Add department", "Add role", "Add employee"],
-  },
-  {
-    type: "choice",
-    name: "view",
-    message: "What do you want to do?",
     choices: [
-      "View departments",
-      "View roles",
-      "View employees",
-      "View department budgets",
+        new inquirer.Separator(chalk.green("--- Add ----")),
+        "Add Department",
+        "Add Role",
+        "Add Employee",
+        new inquirer.Separator(chalk.cyan("--- View ----")),
+        "View Departments",
+        "View Roles",
+        "View Employees",
+        new inquirer.Separator(chalk.yellow("--- Update ----")),
+        "Update Employee Role",
+        new inquirer.Separator(chalk.red("--- Delete ----")),
+        "Delete Department",
+        "Delete Role",
+        "Delete Employee",
     ],
   },
-  {
-    type: "choice",
-    name: "update",
-    message: "What do you want to do?",
-    choices: ["Update employee role", "Update employee manager"],
-  },
-  {
-    type: "choice",
-    name: "delete",
-    message: "What do you want to do?",
-    choices: ["add", "view", "update", "delete"],
-  },
-  {},
 ];
 
 // Actions
@@ -63,27 +48,17 @@ const connection = mysql.createConnection({
 
 connection.connect(function (err) {
   if (err) throw err;
-  console.log(chalk.cyan(`connected as id ${connection.threadId}`));
+  console.log(chalk.cyan(`---------------------------------`));
+  console.log(chalk.cyan(`|                               |`));
+  console.log(chalk.cyan(`| ----- EMPLOYEE MANAGER ------ |`));
+  console.log(chalk.cyan(`|                               |`));
+  console.log(chalk.cyan(`---------------------------------`));
   // Construct new classes
   departments = new departments.Departments(connection);
   roles = new roles.Roles(connection);
   employees = new employees.Employees(connection);
 
-  // DEPARTMENTS
-  //    departments.addDepartment("Customer Service");
-  //    departments.viewDepartments();
-  //    departments.deleteDepartment(8);
+  inquirer.prompt(menu);
 
-  // ROLES
-  //    roles.addRole("Receptionist", 40000, 1);
-  //    roles.viewRoles();
-  //    roles.deleteRole(12);
 
-  // EMPLOYEES
-  //   employees.addEmployee("Michael", "Scott", 1, null);
-  //   employees.addEmployee("Dwight", "Schrute", 1, 1);
-  //   employees.viewEmployees();
-  //   employees.deleteEmployee(1);
-
-  
 });
