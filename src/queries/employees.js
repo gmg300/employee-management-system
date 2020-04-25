@@ -4,44 +4,34 @@ class Employees {
   constructor(connection) {
     this.connection = connection;
   }
-  addRole(title, salary, dept_id) {
+  addEmployee(first_name, last_name, role_id, manager_id) {
     this.connection.query(
-      'INSERT INTO roles (title, salary, dept_id) VALUES (?, ?, ?)',
-      [title, salary, dept_id],
+      'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
+      [first_name, last_name, role_id, manager_id],
       function(err, res) {
         if (err) throw err;
-        console.log(chalk.green(`"${title}" added to roles`));
+        console.log(chalk.green(`"${first_name} ${last_name}" added to employees`));
       });
   }
-  viewRoles() {
+  viewEmployees() {
     this.connection.query(
-      `SELECT * FROM roles`,
+      `SELECT * FROM employees`,
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green("--- Roles ---"));
+        console.log(chalk.green("--- Employees ---"));
         console.table(res);
       });
   }
   updateEmployeeRole() {}
   updateEmployeeManager() {}
-  deleteRole(role_id) {
+  deleteEmployee(employee_id) {
     this.connection.query(
-      'DELETE FROM roles WHERE role_id = ?',
-      role_id,
+      'DELETE FROM employees WHERE employee_id = ?',
+      employee_id,
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green(`Role #${role_id} deleted`));
+        console.log(chalk.green(`Employee #${employee_id} deleted`));
       });
-  }
-}
-
-function callback(err, res) {
-  if (err) {
-    console.log(chalk.red("Error!"));
-    console.log(chalk.red(err));
-  } else {
-    console.log(chalk.cyan(res));
-    console.log(chalk.cyan("Query successful."));
   }
 }
 

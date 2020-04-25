@@ -34,7 +34,6 @@ class Departments {
   }
 }
   
-
 module.exports = {
   Departments
 };

@@ -70,17 +70,20 @@ connection.connect(function (err) {
   employees = new employees.Employees(connection);
 
   // DEPARTMENTS
-  // departments.addDepartment("Customer Service");
-  // departments.viewDepartments();
-  // departments.deleteDepartment(8);
+  //    departments.addDepartment("Customer Service");
+  //    departments.viewDepartments();
+  //    departments.deleteDepartment(8);
 
   // ROLES
-  // roles.addRole("Receptionist", 40000, 1);
-  // roles.viewRoles();
-  // roles.deleteRole(12);
+  //    roles.addRole("Receptionist", 40000, 1);
+  //    roles.viewRoles();
+  //    roles.deleteRole(12);
 
   // EMPLOYEES
-  // employees.addEmployee("Receptionist", 40000, 1);
-  // employees.viewEmployees();
-  // employees.deleteEmployee(12);
+  //   employees.addEmployee("Michael", "Scott", 1, null);
+  //   employees.addEmployee("Dwight", "Schrute", 1, 1);
+  //   employees.viewEmployees();
+  //   employees.deleteEmployee(1);
+
+  
 });
