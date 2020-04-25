@@ -1,9 +1,15 @@
+const chalk = require("chalk");
+
 class Roles {
     constructor(connection) {
         this.connection = connection;
     }
-    addRole() {
-
+    addRole(options) {
+      this.connection.query(
+        "INSERT INTO roles (title, salary, dept_id) VALUES ?",
+        [options],
+        callback
+      );
     }
     viewRoles() {
         

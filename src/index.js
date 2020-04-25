@@ -21,19 +21,19 @@ const menu = [
         type: "choice",
         name: "add",
         message: "What do you want to do?",
-        choices: ["add", "view", "update", "delete"]
+        choices: ["Add department", "Add role", "Add employee"]
     },
     {
         type: "choice",
         name: "view",
         message: "What do you want to do?",
-        choices: ["add", "view", "update", "delete"]
+        choices: ["View departments", "View roles", "View employees", "View department budgets"]
     },
     {
         type: "choice",
         name: "update",
         message: "What do you want to do?",
-        choices: ["add", "view", "update", "delete"]
+        choices: ["Update employee role", "Update employee manager"]
     },
     {
         type: "choice",
@@ -68,7 +68,11 @@ connection.connect(function(err) {
     roles = new roles.Roles(connection);
     employees = new employees.Employees(connection);
 
+    // departments.addDepartment("Customer Service");
+    // departments.viewDepartments();  
+    // departments.deleteDepartment(8);  
     
+
 
     
 });
