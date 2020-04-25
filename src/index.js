@@ -1,11 +1,13 @@
+// Imports
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const chalk = require("chalk");
 const cTable = require("console.table");
 
-let department = require("./queries/department");
-let role = require("./queries/role");
-let employee = require("./queries/employee");
+// Classes
+let departments = require("./queries/departments");
+let roles = require("./queries/roles");
+let employees = require("./queries/employees");
 
 // Main Menu
 const menu = [
@@ -53,11 +55,20 @@ const actions = {
 const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-  
-    // Your username
     user: 'root',
-  
-    // Your password
     password: 'password',
-    database: 'playlist_db'
+    database: 'employees_db'
   });
+
+connection.connect(function(err) {
+    if(err) throw err;
+    console.log(chalk.cyan(`connected as id ${connection.threadId}`));
+    // Construct new classes
+    departments = new departments.Departments(connection);
+    roles = new roles.Roles(connection);
+    employees = new employees.Employees(connection);
+
+    
+
+    
+});
