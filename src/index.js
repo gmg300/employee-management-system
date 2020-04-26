@@ -25,6 +25,7 @@ const menu = [
       "View Employees",
       new inquirer.Separator(chalk.yellow("--- Update ---------")),
       "Update Employee Role",
+      "Update Employee Manager",
       new inquirer.Separator(chalk.red("--- Delete ---------")),
       "Delete Department",
       "Delete Role",
@@ -48,6 +49,8 @@ const menu = [
           return "viewEmployees";
         case "Update Employee Role":
           return "updateEmployeeRole";
+        case "Update Employee Manager":
+          return "updateEmployeeManager";
         case "Delete Department":
           return "deleteDept";
         case "Delete Role":
@@ -138,13 +141,13 @@ const actions = {
         {
           type: "input",
           name: "manager_id",
-          message: "Enter manager id (if applicable)",
-          validate: function(input) {
-            return input !== "";
-          }
+          message: "Enter manager id (enter nothing if null)",
         },
       ])
       .then((res) => {
+        if(res.manager_id == '') {
+            res.manager_id = null;
+        }
         let first_name = res.name.split(" ")[0];
         let last_name = res.name.split(" ")[1];
         employees.addEmployee(
@@ -202,21 +205,45 @@ const actions = {
         setTimeout(ask, 200);
       });
   },
+  updateEmployeeManager: function () {
+    console.log("--- Update an employee's manager ---");
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "employee_id",
+          message: "Enter the id for the employee whose manage you would like to update",
+          validate: function(input) {
+            return input !== "";
+          }
+        },
+        {
+          type: "input",
+          name: "manager_id",
+          message: "Enter new manager id (enter nothing if null)",
+        },
+      ])
+      .then((res) => {
+        if(res.manager_id == '') {
+            res.manager_id = null;
+        }
+        employees.updateEmployeeManager(res.manager_id, res.employee_id);
+        setTimeout(ask, 200);
+      });
+  },
   deleteDept: function () {
     console.log("--- Delete a department ---");
     inquirer
       .prompt({
         type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
+        name: "dept_id",
+        message: "Enter the id of the department you would like to delete",
+        validate: function(input) {
+            return input !== "";
+          }
       })
       .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
-        }
+        departments.deleteDepartment(res.dept_id);
         setTimeout(ask, 200);
       });
   },
@@ -225,16 +252,14 @@ const actions = {
     inquirer
       .prompt({
         type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
+        name: "role_id",
+        message: "Enter the id of the role you would like to delete",
+        validate: function(input) {
+            return input !== "";
+          }
       })
       .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
-        }
+        roles.deleteRole(res.role_id);
         setTimeout(ask, 200);
       });
   },
@@ -243,16 +268,14 @@ const actions = {
     inquirer
       .prompt({
         type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
+        name: "employee_id",
+        message: "Enter the id of the employee you would like to delete",
+        validate: function(input) {
+            return input !== "";
+          }
       })
       .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
-        }
+        employees.deleteEmployee(res.employee_id);
         setTimeout(ask, 200);
       });
   },

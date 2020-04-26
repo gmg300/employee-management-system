@@ -24,7 +24,7 @@ class Employees {
   }
   updateEmployeeRole(role_id, manager_id, employee_id) {
     this.connection.query(
-      'UPDATE employees SET role_id = ?, manager_id = ? WHERE employee_id = ?;',
+      'UPDATE employees SET role_id = ?, manager_id = ? WHERE employee_id = ?',
       [role_id, manager_id, employee_id],
       function(err, res) {
         if(err) throw err;
@@ -33,7 +33,7 @@ class Employees {
   }
   updateEmployeeManager(manager_id, employee_id) {
     this.connection.query(
-      'UPDATE employees SET manager_id = ? WHERE employee_id = ?;',
+      'UPDATE employees SET manager_id = ? WHERE employee_id = ?',
       [manager_id, employee_id],
       function(err, res) {
         if(err) throw err;
