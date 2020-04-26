@@ -15,21 +15,21 @@ const menu = [
     name: "action",
     message: "What do you want to do?",
     choices: [
-      new inquirer.Separator(chalk.green("--- Add ----")),
+      new inquirer.Separator(chalk.green("--- Add ------------")),
       "Add Department",
       "Add Role",
       "Add Employee",
-      new inquirer.Separator(chalk.cyan("--- View ----")),
+      new inquirer.Separator(chalk.cyan("--- View -----------")),
       "View Departments",
       "View Roles",
       "View Employees",
-      new inquirer.Separator(chalk.yellow("--- Update ----")),
+      new inquirer.Separator(chalk.yellow("--- Update ---------")),
       "Update Employee Role",
-      new inquirer.Separator(chalk.red("--- Delete ----")),
+      new inquirer.Separator(chalk.red("--- Delete ---------")),
       "Delete Department",
       "Delete Role",
       "Delete Employee",
-      new inquirer.Separator(chalk.white("-------------")),
+      new inquirer.Separator(chalk.white("--------------------")),
       "EXIT",
     ],
     filter: function (choice) {
@@ -71,6 +71,9 @@ const actions = {
           type: "input",
           name: "dept_name",
           message: "Enter department name",
+          validate: function(input) {
+            return input !== "";
+          }
         },
       ])
       .then((res) => {
@@ -79,22 +82,32 @@ const actions = {
       });
   },
   addRole: function () {
+    console.log("--- Add a role ---");
     inquirer
       .prompt([
         {
           type: "input",
           name: "title",
           message: "Enter role title",
+          validate: function(input) {
+            return input !== "";
+          }
         },
         {
           type: "input",
           name: "salary",
           message: "Enter salary (number)",
+          validate: function(input) {
+            return input !== "";
+          }
         },
         {
           type: "input",
           name: "dept_id",
           message: "Enter department id for role (see table)",
+          validate: function(input) {
+            return input !== "";
+          }
         },
       ])
       .then((res) => {
@@ -103,28 +116,43 @@ const actions = {
       });
   },
   addEmployee: function () {
+    console.log("--- Add an employee ---");
     inquirer
       .prompt([
         {
           type: "input",
           name: "name",
           message: "Enter first and last name",
+          validate: function(input) {
+            return input !== "";
+          },
         },
         {
           type: "input",
           name: "role_id",
           message: "Enter role id",
+          validate: function(input) {
+            return input !== "";
+          }
         },
         {
           type: "input",
           name: "manager_id",
           message: "Enter manager id (if applicable)",
+          validate: function(input) {
+            return input !== "";
+          }
         },
       ])
       .then((res) => {
-          let first_name = res.name.split(" ")[0];
-          let last_name = res.name.split(" ")[1];
-          employees.addEmployee(first_name, last_name, res.role_id, res.manager_id);
+        let first_name = res.name.split(" ")[0];
+        let last_name = res.name.split(" ")[1];
+        employees.addEmployee(
+          first_name,
+          last_name,
+          res.role_id,
+          res.manager_id
+        );
         setTimeout(ask, 200);
       });
   },
@@ -141,23 +169,41 @@ const actions = {
     setTimeout(ask, 200);
   },
   updateEmployeeRole: function () {
+    console.log("--- Update an employee role ---");
     inquirer
-      .prompt({
-        type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
-      })
+      .prompt([
+        {
+          type: "input",
+          name: "employee_id",
+          message: "Enter the id for the employee you would like to update",
+          validate: function(input) {
+            return input !== "";
+          }
+        },
+        {
+          type: "input",
+          name: "role_id",
+          message: "Enter the new role id",
+          validate: function(input) {
+            return input !== "";
+          }
+        },
+        {
+          type: "input",
+          name: "manager_id",
+          message: "Enter new manager id (if applicable)",
+        },
+      ])
       .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
+        if(res.manager_id == '') {
+            res.manager_id = null;
         }
+        employees.updateEmployeeRole(res.role_id, res.manager_id, res.employee_id);
         setTimeout(ask, 200);
       });
   },
   deleteDept: function () {
+    console.log("--- Delete a department ---");
     inquirer
       .prompt({
         type: "input",
@@ -175,6 +221,7 @@ const actions = {
       });
   },
   deleteRole: function () {
+    console.log("--- Delete a role ---");
     inquirer
       .prompt({
         type: "input",
@@ -192,6 +239,7 @@ const actions = {
       });
   },
   deleteEmployee: function () {
+    console.log("--- Delete an employee ---");
     inquirer
       .prompt({
         type: "input",
@@ -209,9 +257,29 @@ const actions = {
       });
   },
   exit: function () {
+    console.log("--- Exiting app ---");
     process.exit();
   },
 };
+
+function getOverview() {
+    connection.query(
+        `SELECT 
+          employees.employee_id AS id,
+          employees.first_name AS first,
+          employees.last_name AS last,
+          roles.title, 
+          roles.role_id AS job_id,
+          roles.salary,
+          employees.manager_id AS manager
+          FROM employees
+          INNER JOIN roles ON employees.role_id = roles.role_id`,
+        function (err, res) {
+          if (err) throw err;
+          console.table(res);
+        }
+      );
+}
 
 function ask() {
   inquirer.prompt(menu).then(function (choice) {
@@ -230,15 +298,16 @@ const connection = mysql.createConnection({
 
 connection.connect(function (err) {
   if (err) throw err;
-  //   console.log(chalk.cyan(`---------------------------------`));
-  //   console.log(chalk.cyan(`|                               |`));
-  //   console.log(chalk.cyan(`| ----- EMPLOYEE MANAGER ------ |`));
-  //   console.log(chalk.cyan(`|                               |`));
-  //   console.log(chalk.cyan(`---------------------------------`));
+  console.log(chalk.blue(`---------------------------------`));
+  console.log(chalk.blue(`|                               |`));
+  console.log(chalk.blue(`| ----- EMPLOYEE MANAGER ------ |`));
+  console.log(chalk.blue(`|                               |`));
+  console.log(chalk.blue(`---------------------------------`));
   // Construct new classes
   departments = new departments.Departments(connection);
   roles = new roles.Roles(connection);
   employees = new employees.Employees(connection);
 
-  ask();
+  getOverview();
+  setTimeout(ask, 200);
 });
