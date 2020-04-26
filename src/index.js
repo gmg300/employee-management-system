@@ -2,7 +2,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const chalk = require("chalk");
-const cTable = require("console.table");
 
 // Classes
 let departments = require("./queries/departments");
@@ -130,55 +129,16 @@ const actions = {
       });
   },
   viewDepts: function () {
-    inquirer
-      .prompt({
-        type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
-      })
-      .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
-        }
-        setTimeout(ask, 200);
-      });
+    departments.viewDepartments();
+    setTimeout(ask, 200);
   },
   viewRoles: function () {
-    inquirer
-      .prompt({
-        type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
-      })
-      .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
-        }
-        setTimeout(ask, 200);
-      });
+    roles.viewRoles();
+    setTimeout(ask, 200);
   },
   viewEmployees: function () {
-    inquirer
-      .prompt({
-        type: "input",
-        name: "id",
-        message: "Enter an id to delete by, or nothing to delete everything.",
-      })
-      .then((res) => {
-        if (res.id == "") {
-          playlist.dropTable();
-          playlist.createTable();
-        } else {
-          playlist.deletePlaylists("id", res.id);
-        }
-        setTimeout(ask, 200);
-      });
+    employees.viewEmployees();
+    setTimeout(ask, 200);
   },
   updateEmployeeRole: function () {
     inquirer

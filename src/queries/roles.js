@@ -17,7 +17,7 @@ class Roles {
   viewRoles() {
     this.connection.query(`SELECT * FROM roles`, function (err, res) {
       if (err) throw err;
-      console.log(chalk.green("--- Roles ---"));
+      console.log(chalk.cyan("--- Roles ---"));
       console.table(res);
     });
   }

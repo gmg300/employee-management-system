@@ -18,7 +18,7 @@ class Departments {
       `SELECT * FROM departments`,
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green("--- Departments ---"));
+        console.log(chalk.cyan("--- Departments ---"));
         console.table(res);
       });
   }

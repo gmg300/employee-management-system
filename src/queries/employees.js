@@ -18,7 +18,7 @@ class Employees {
       `SELECT * FROM employees`,
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green("--- Employees ---"));
+        console.log(chalk.cyan("--- Employees ---"));
         console.table(res);
       });
   }
