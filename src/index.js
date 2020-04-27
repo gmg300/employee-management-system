@@ -69,6 +69,7 @@ const menu = [
 
 // Init main menu
 function ask() {
+  // Data arrays
   let deptsArr;
   let rolesArr;
   let employeesArr;
@@ -86,16 +87,18 @@ function ask() {
         if (err) throw err;
         employeesArr = resEmployees;
         // Get all current managers data and save in array
-        connection.query(`SELECT * FROM employees WHERE manager_id IS NULL`, function (err, resManagers) {
-          if (err) throw err;
-          managersArr = resManagers;
-        // Start main menu
-        inquirer.prompt(menu).then(function (choice) {
-          // Actions
-          const actions = {
-            viewOverview: function () {
-              connection.query(
-                `SELECT 
+        connection.query(
+          `SELECT * FROM employees WHERE manager_id IS NULL`,
+          function (err, resManagers) {
+            if (err) throw err;
+            managersArr = resManagers;
+            // Start main menu
+            inquirer.prompt(menu).then(function (choice) {
+              // Actions
+              const actions = {
+                viewOverview: function () {
+                  connection.query(
+                    `SELECT 
                       employees.employee_id AS id,
                       employees.first_name AS first,
                       employees.last_name AS last,
@@ -105,85 +108,85 @@ function ask() {
                       employees.manager_id AS manager
                       FROM employees
                       INNER JOIN roles ON employees.role_id = roles.role_id`,
-                function (err, res) {
-                  if (err) throw err;
-                  console.table(res);
-                  setTimeout(ask, 200);
-                }
-              );
-            },
-            viewDepts: function () {
-              departments.viewDepartments();
-              setTimeout(ask, 200);
-            },
-            viewRoles: function () {
-              roles.viewRoles();
-              setTimeout(ask, 200);
-            },
-            viewEmployees: function () {
-              employees.viewEmployees();
-              setTimeout(ask, 200);
-            },
-            addDept: function () {
-              console.log("--- Add a department ---");
-              inquirer
-                .prompt([
-                  {
-                    type: "input",
-                    name: "dept_name",
-                    message: "Enter department name",
-                    validate: function (input) {
-                      return input !== "";
-                    },
-                  },
-                ])
-                .then((res) => {
-                  departments.addDepartment(res.dept_name);
-                  setTimeout(ask, 200);
-                });
-            },
-            addRole: function () {
-              console.log("--- Add a role ---");
-              inquirer
-                .prompt([
-                  {
-                    type: "list",
-                    name: "dept_name",
-                    message: "Which department is this role in?",
-                    choices: function () {
-                      let arr = deptsArr.map((dept) => {
-                        return dept.dept_name;
-                      });
-                      return arr;
-                    },
-                  },
-                  {
-                    type: "input",
-                    name: "title",
-                    message: "Enter role title",
-                    validate: function (input) {
-                      return input !== "";
-                    },
-                  },
-                  {
-                    type: "input",
-                    name: "salary",
-                    message: "Enter salary (number)",
-                    validate: function (input) {
-                      return input !== "";
-                    },
-                  },
-                ])
-                .then((res) => {
-                  let dept = deptsArr.find(
-                    (dept) => dept.dept_name == res.dept_name
+                    function (err, res) {
+                      if (err) throw err;
+                      console.table(res);
+                      setTimeout(ask, 200);
+                    }
                   );
-                  roles.addRole(res.title, res.salary, dept.dept_id);
+                },
+                viewDepts: function () {
+                  departments.viewDepartments();
                   setTimeout(ask, 200);
-                });
-            },
-            addEmployee: function () {
-              console.log("--- Add an employee ---");
+                },
+                viewRoles: function () {
+                  roles.viewRoles();
+                  setTimeout(ask, 200);
+                },
+                viewEmployees: function () {
+                  employees.viewEmployees();
+                  setTimeout(ask, 200);
+                },
+                addDept: function () {
+                  console.log("--- Add a department ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "input",
+                        name: "dept_name",
+                        message: "Enter department name",
+                        validate: function (input) {
+                          return input !== "";
+                        },
+                      },
+                    ])
+                    .then((res) => {
+                      departments.addDepartment(res.dept_name);
+                      setTimeout(ask, 200);
+                    });
+                },
+                addRole: function () {
+                  console.log("--- Add a role ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        name: "dept_name",
+                        message: "Which department is this role in?",
+                        choices: function () {
+                          let arr = deptsArr.map((dept) => {
+                            return dept.dept_name;
+                          });
+                          return arr;
+                        },
+                      },
+                      {
+                        type: "input",
+                        name: "title",
+                        message: "Enter role title",
+                        validate: function (input) {
+                          return input !== "";
+                        },
+                      },
+                      {
+                        type: "input",
+                        name: "salary",
+                        message: "Enter salary (number)",
+                        validate: function (input) {
+                          return input !== "";
+                        },
+                      },
+                    ])
+                    .then((res) => {
+                      let dept = deptsArr.find(
+                        (dept) => dept.dept_name == res.dept_name
+                      );
+                      roles.addRole(res.title, res.salary, dept.dept_id);
+                      setTimeout(ask, 200);
+                    });
+                },
+                addEmployee: function () {
+                  console.log("--- Add an employee ---");
                   inquirer
                     .prompt([
                       {
@@ -229,7 +232,9 @@ function ask() {
                         let first_name = res.manager.split(" ")[0];
                         let last_name = res.manager.split(" ")[1];
                         manager = managersArr.find(
-                          (manager) => manager.first_name == first_name && manager.last_name == last_name
+                          (manager) =>
+                            manager.first_name == first_name &&
+                            manager.last_name == last_name
                         );
                         manager = manager.employee_id;
                       }
@@ -243,140 +248,139 @@ function ask() {
                       );
                       setTimeout(ask, 200);
                     });
-                }
-              );
-            },
-            updateEmployeeRole: function () {
-              console.log("--- Update an employee role ---");
-              inquirer
-                .prompt([
-                  {
-                    type: "list",
-                    name: "employee_name",
-                    message: "Which employee's role would you like to update?",
-                    choices: function () {
-                      let arr = employeesArr.map((employee) => {
-                        let name = `${employee.first_name} ${employee.last_name}`;
-                        return name;
-                      });
-                      return arr;
-                    } 
-                  },
-                  {
-                    type: "list",
-                    name: "title",
-                    message: "What is the selected employee's new role?",
-                    choices: function () {
-                      let arr = rolesArr.map((role) => {
-                        return role.title;
-                      });
-                      return arr;
-                    },
-                  },
-                ])
-                .then((res) => {
-                  let first_name = res.employee_name.split(" ")[0];
-                  let last_name = res.employee.split(" ")[1];
-                  let employee_id = employeesArr.find(
-                    (employee) => employee.first_name == first_name && employee.last_name == last_name
-                  );
-                  let role_id = rolesArr.find(
-                    (role) => role.title == res.title
-                  );
-                  employees.updateEmployeeRole(
-                    role_id,
-                    employee_id
-                  );
-                  setTimeout(ask, 200);
-                });
-            },
-            // updateEmployeeManager: function () {
-            //   console.log("--- Update an employee's manager ---");
-            //   inquirer
-            //     .prompt([
-            //       {
-            //         type: "input",
-            //         name: "employee_id",
-            //         message:
-            //           "Enter the id for the employee whose manage you would like to update",
-            //         validate: function (input) {
-            //           return input !== "";
-            //         },
-            //       },
-            //       {
-            //         type: "input",
-            //         name: "manager_id",
-            //         message: "Enter new manager id (enter nothing if null)",
-            //       },
-            //     ])
-            //     .then((res) => {
-            //       if (res.manager_id == "") {
-            //         res.manager_id = null;
-            //       }
-            //       employees.updateEmployeeManager(
-            //         res.manager_id,
-            //         res.employee_id
-            //       );
-            //       setTimeout(ask, 200);
-            //     });
-            // },
-            // deleteDept: function () {
-            //   console.log("--- Delete a department ---");
-            //   inquirer
-            //     .prompt({
-            //       type: "input",
-            //       name: "dept_id",
-            //       message:
-            //         "Enter the id of the department you would like to delete",
-            //       validate: function (input) {
-            //         return input !== "";
-            //       },
-            //     })
-            //     .then((res) => {
-            //       departments.deleteDepartment(res.dept_id);
-            //       setTimeout(ask, 200);
-            //     });
-            // },
-            // deleteRole: function () {
-            //   console.log("--- Delete a role ---");
-            //   inquirer
-            //     .prompt({
-            //       type: "input",
-            //       name: "role_id",
-            //       message: "Enter the id of the role you would like to delete",
-            //       validate: function (input) {
-            //         return input !== "";
-            //       },
-            //     })
-            //     .then((res) => {
-            //       roles.deleteRole(res.role_id);
-            //       setTimeout(ask, 200);
-            //     });
-            // },
-            // deleteEmployee: function () {
-            //   console.log("--- Delete an employee ---");
-            //   inquirer
-            //     .prompt({
-            //       type: "input",
-            //       name: "employee_id",
-            //       message:
-            //         "Enter the id of the employee you would like to delete",
-            //       validate: function (input) {
-            //         return input !== "";
-            //       },
-            //     })
-            //     .then((res) => {
-            //       employees.deleteEmployee(res.employee_id);
-            //       setTimeout(ask, 200);
-            //     });
-            // },
-            exit: function () {
-              console.log("--- Exiting app ---");
-              process.exit();
-            },
-          };
-          actions[choice.action]();
-        });
+                },
+                updateEmployeeRole: function () {
+                  console.log("--- Update an employee role ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        name: "name",
+                        message:
+                          "Which employee's role would you like to update?",
+                        choices: function () {
+                          let arr = employeesArr.map((employee) => {
+                            let name = `${employee.first_name} ${employee.last_name}`;
+                            return name;
+                          });
+                          return arr;
+                        },
+                      },
+                      {
+                        type: "list",
+                        name: "title",
+                        message: "What is the selected employee's new role?",
+                        choices: function () {
+                          let arr = rolesArr.map((role) => {
+                            return role.title;
+                          });
+                          return arr;
+                        },
+                      },
+                    ])
+                    .then((res) => {
+                      let first_name = res.name.split(" ")[0];
+                      let last_name = res.name.split(" ")[1];
+                      let employee = employeesArr.find(employee =>
+                          employee.first_name == first_name &&
+                          employee.last_name == last_name
+                      );
+                      let role = rolesArr.find(
+                        (role) => role.title == res.title
+                      );
+                      employees.updateEmployeeRole(role.role_id, employee.employee_id);
+                      setTimeout(ask, 200);
+                    });
+                },
+                // updateEmployeeManager: function () {
+                //   console.log("--- Update an employee's manager ---");
+                //   inquirer
+                //     .prompt([
+                //       {
+                //         type: "input",
+                //         name: "employee_id",
+                //         message:
+                //           "Enter the id for the employee whose manage you would like to update",
+                //         validate: function (input) {
+                //           return input !== "";
+                //         },
+                //       },
+                //       {
+                //         type: "input",
+                //         name: "manager_id",
+                //         message: "Enter new manager id (enter nothing if null)",
+                //       },
+                //     ])
+                //     .then((res) => {
+                //       if (res.manager_id == "") {
+                //         res.manager_id = null;
+                //       }
+                //       employees.updateEmployeeManager(
+                //         res.manager_id,
+                //         res.employee_id
+                //       );
+                //       setTimeout(ask, 200);
+                //     });
+                // },
+                // deleteDept: function () {
+                //   console.log("--- Delete a department ---");
+                //   inquirer
+                //     .prompt({
+                //       type: "input",
+                //       name: "dept_id",
+                //       message:
+                //         "Enter the id of the department you would like to delete",
+                //       validate: function (input) {
+                //         return input !== "";
+                //       },
+                //     })
+                //     .then((res) => {
+                //       departments.deleteDepartment(res.dept_id);
+                //       setTimeout(ask, 200);
+                //     });
+                // },
+                // deleteRole: function () {
+                //   console.log("--- Delete a role ---");
+                //   inquirer
+                //     .prompt({
+                //       type: "input",
+                //       name: "role_id",
+                //       message: "Enter the id of the role you would like to delete",
+                //       validate: function (input) {
+                //         return input !== "";
+                //       },
+                //     })
+                //     .then((res) => {
+                //       roles.deleteRole(res.role_id);
+                //       setTimeout(ask, 200);
+                //     });
+                // },
+                // deleteEmployee: function () {
+                //   console.log("--- Delete an employee ---");
+                //   inquirer
+                //     .prompt({
+                //       type: "input",
+                //       name: "employee_id",
+                //       message:
+                //         "Enter the id of the employee you would like to delete",
+                //       validate: function (input) {
+                //         return input !== "";
+                //       },
+                //     })
+                //     .then((res) => {
+                //       employees.deleteEmployee(res.employee_id);
+                //       setTimeout(ask, 200);
+                //     });
+                // },
+                exit: function () {
+                  console.log("--- Exiting app ---");
+                  process.exit();
+                },
+              };
+              actions[choice.action]();
+            });
+          }
+        );
       });
     });
   });
