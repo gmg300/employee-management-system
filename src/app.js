@@ -196,7 +196,7 @@ function ask() {
                           name: "salary",
                           message: "Enter salary (number)",
                           validate: function (input) {
-                            return input !== "";
+                            return input >= 20000;
                           },
                         },
                       ])
