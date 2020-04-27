@@ -94,16 +94,31 @@ function ask() {
               // Actions
               const actions = {
                 viewDepts: function () {
-                  departments.viewDepartments();
-                  setTimeout(ask, 200);
+                  if (deptsArr.length < 1) {
+                    console.log(chalk.red("There are no departments to view"));
+                    ask();
+                  } else {
+                    departments.viewDepartments();
+                    setTimeout(ask, 200);
+                  }
                 },
                 viewRoles: function () {
-                  roles.viewRoles();
-                  setTimeout(ask, 200);
+                  if (rolesArr.length < 1) {
+                    console.log(chalk.red("There are no roles to view"));
+                    ask();
+                  } else {
+                    roles.viewRoles();
+                    setTimeout(ask, 200);
+                  }
                 },
                 viewEmployees: function () {
-                  employees.viewEmployees();
-                  setTimeout(ask, 200);
+                  if (employeesArr.length < 1) {
+                    console.log(chalk.red("There are no employees to view"));
+                    ask();
+                  } else {
+                    employees.viewEmployees();
+                    setTimeout(ask, 200);
+                  }
                 },
                 addDept: function () {
                   console.log("--- Add a department ---");
@@ -125,110 +140,130 @@ function ask() {
                 },
                 addRole: function () {
                   console.log("--- Add a role ---");
-                  inquirer
-                    .prompt([
-                      {
-                        type: "list",
-                        name: "dept_name",
-                        message: "Which department is this role in?",
-                        choices: function () {
-                          let arr = deptsArr.map((dept) => {
-                            return dept.dept_name;
-                          });
-                          return arr;
+                  if (deptsArr.length < 1) {
+                    console.log(
+                      chalk.red("Cannot add a role without departments")
+                    );
+                    ask();
+                  } else {
+                    inquirer
+                      .prompt([
+                        {
+                          type: "list",
+                          name: "dept_name",
+                          message: "Which department is this role in?",
+                          choices: function () {
+                            let arr = deptsArr.map((dept) => {
+                              return dept.dept_name;
+                            });
+                            return arr;
+                          },
                         },
-                      },
-                      {
-                        type: "input",
-                        name: "title",
-                        message: "Enter role title",
-                        validate: function (input) {
-                          return input !== "";
+                        {
+                          type: "input",
+                          name: "title",
+                          message: "Enter role title",
+                          validate: function (input) {
+                            return input !== "";
+                          },
                         },
-                      },
-                      {
-                        type: "input",
-                        name: "salary",
-                        message: "Enter salary (number)",
-                        validate: function (input) {
-                          return input !== "";
+                        {
+                          type: "input",
+                          name: "salary",
+                          message: "Enter salary (number)",
+                          validate: function (input) {
+                            return input !== "";
+                          },
                         },
-                      },
-                    ])
-                    .then((res) => {
-                      let dept = deptsArr.find(
-                        (dept) => dept.dept_name == res.dept_name
-                      );
-                      roles.addRole(res.title, res.salary, dept.dept_id);
-                      setTimeout(ask, 200);
-                    });
+                      ])
+                      .then((res) => {
+                        let dept = deptsArr.find(
+                          (dept) => dept.dept_name == res.dept_name
+                        );
+                        roles.addRole(res.title, res.salary, dept.dept_id);
+                        setTimeout(ask, 200);
+                      });
+                  }
                 },
                 addEmployee: function () {
                   console.log("--- Add an employee ---");
-                  inquirer
-                    .prompt([
-                      {
-                        type: "input",
-                        name: "name",
-                        message: "Enter first and last name",
-                        validate: function (input) {
-                          return input !== "";
+                  if (rolesArr.length < 1) {
+                    console.log(
+                      chalk.red("Cannot add an employee without roles")
+                    );
+                    ask();
+                  } else {
+                    inquirer
+                      .prompt([
+                        {
+                          type: "input",
+                          name: "name",
+                          message: "Enter first and last name",
+                          validate: function (input) {
+                            return input !== "";
+                          },
                         },
-                      },
-                      {
-                        type: "list",
-                        name: "title",
-                        message: "What is the employee's role?",
-                        choices: function () {
-                          let arr = rolesArr.map((role) => {
-                            return role.title;
-                          });
-                          return arr;
+                        {
+                          type: "list",
+                          name: "title",
+                          message: "What is the employee's role?",
+                          choices: function () {
+                            let arr = rolesArr.map((role) => {
+                              return role.title;
+                            });
+                            return arr;
+                          },
                         },
-                      },
-                      {
-                        type: "list",
-                        name: "manager",
-                        message: "Who is the employee's manager?",
-                        choices: function () {
-                          let arr = managersArr.map((manager) => {
-                            let name = `${manager.first_name} ${manager.last_name}`;
-                            return name;
-                          });
-                          return ["none", ...arr];
+                        {
+                          type: "list",
+                          name: "manager",
+                          message: "Who is the employee's manager?",
+                          choices: function () {
+                            let arr = managersArr.map((manager) => {
+                              let name = `${manager.first_name} ${manager.last_name}`;
+                              return name;
+                            });
+                            return ["none", ...arr];
+                          },
                         },
-                      },
-                    ])
-                    .then((res) => {
-                      let role = rolesArr.find(
-                        (role) => role.title == res.title
-                      );
-                      let manager;
-                      if (res.manager == "none") {
-                        manager = null;
-                      } else {
-                        let first_name = res.manager.split(" ")[0];
-                        let last_name = res.manager.split(" ")[1];
-                        manager = managersArr.find(
-                          (manager) =>
-                            manager.first_name == first_name &&
-                            manager.last_name == last_name
+                      ])
+                      .then((res) => {
+                        let role = rolesArr.find(
+                          (role) => role.title == res.title
                         );
-                        manager = manager.employee_id;
-                      }
-                      let first_name = res.name.split(" ")[0];
-                      let last_name = res.name.split(" ")[1];
-                      employees.addEmployee(
-                        first_name,
-                        last_name,
-                        role.role_id,
-                        manager
-                      );
-                      setTimeout(ask, 200);
-                    });
+                        let manager;
+                        if (res.manager == "none") {
+                          manager = null;
+                        } else {
+                          let first_name = res.manager.split(" ")[0];
+                          let last_name = res.manager.split(" ")[1];
+                          manager = managersArr.find(
+                            (manager) =>
+                              manager.first_name == first_name &&
+                              manager.last_name == last_name
+                          );
+                          manager = manager.employee_id;
+                        }
+                        let first_name = res.name.split(" ")[0];
+                        let last_name = res.name.split(" ")[1];
+                        employees.addEmployee(
+                          first_name,
+                          last_name,
+                          role.role_id,
+                          manager
+                        );
+                        setTimeout(ask, 200);
+                      });
+                  }
                 },
                 updateEmployeeRole: function () {
                   console.log("--- Update an employee role ---");
+                  if (employeesArr.length < 1) {
+                    console.log(
+                      chalk.red("There are no employees to update")
+                    );
+                    ask();
+                  } else {
                   inquirer
                     .prompt([
                       {
@@ -275,9 +310,16 @@ function ask() {
                       );
                       setTimeout(ask, 200);
                     });
+                  }
                 },
                 updateEmployeeManager: function () {
                   console.log("--- Update an employee's manager ---");
+                  if (employeesArr.length < 1) {
+                    console.log(
+                      chalk.red("There are no employees to update")
+                    );
+                    ask();
+                  } else {
                   inquirer
                     .prompt([
                       {
@@ -335,9 +377,14 @@ function ask() {
                       );
                       setTimeout(ask, 200);
                     });
+                  }
                 },
                 deleteDept: function () {
                   console.log("--- Remove a department ---");
+                  if (deptsArr.length < 1) {
+                    console.log(chalk.red("There are no departments to remove"));
+                    ask();
+                  } else {
                   inquirer
                     .prompt([
                       {
@@ -369,9 +416,14 @@ function ask() {
                         setTimeout(ask, 200);
                       }
                     });
+                  }  
                 },
                 deleteRole: function () {
                   console.log("--- Remove a role ---");
+                  if (rolesArr.length < 1) {
+                    console.log(chalk.red("There are no roles to remove"));
+                    ask();
+                  } else {
                   inquirer
                     .prompt([
                       {
@@ -402,9 +454,14 @@ function ask() {
                         setTimeout(ask, 200);
                       }
                     });
+                  }
                 },
                 deleteEmployee: function () {
                   console.log("--- Remove an employee ---");
+                  if (employeesArr.length < 1) {
+                    console.log(chalk.red("There are no employees to remove"));
+                    ask();
+                  } else {
                   inquirer
                     .prompt([
                       {
@@ -436,10 +493,14 @@ function ask() {
                             employee.first_name == first_name &&
                             employee.last_name == last_name
                         );
-                        employees.deleteEmployee(employee.employee_id, res.name);
+                        employees.deleteEmployee(
+                          employee.employee_id,
+                          res.name
+                        );
                         setTimeout(ask, 200);
                       }
                     });
+                  }
                 },
                 exit: function () {
                   console.log("--- Exiting app ---");
@@ -465,7 +526,7 @@ const connection = mysql.createConnection({
 });
 
 // Connect to MySQL db and run app
-connection.connect(async function (err) {
+connection.connect(function (err) {
   if (err) throw err;
   console.log(chalk.blue(`---------------------------------`));
   console.log(chalk.blue(`|                               |`));
