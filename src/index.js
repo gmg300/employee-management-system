@@ -26,10 +26,10 @@ const menu = [
       new inquirer.Separator(chalk.yellow("--- Update ---------")),
       "Update Employee Role",
       "Update Employee Manager",
-      // new inquirer.Separator(chalk.red("--- Delete ---------")),
-      // "Delete Department",
-      // "Delete Role",
-      // "Delete Employee",
+      new inquirer.Separator(chalk.red("--- Delete ---------")),
+      "Delete Department",
+      "Delete Role",
+      "Delete Employee",
       new inquirer.Separator(chalk.white("--------------------")),
       "EXIT",
     ],
@@ -259,14 +259,20 @@ function ask() {
                     .then((res) => {
                       let first_name = res.name.split(" ")[0];
                       let last_name = res.name.split(" ")[1];
-                      let employee = employeesArr.find(employee =>
+                      let employee = employeesArr.find(
+                        (employee) =>
                           employee.first_name == first_name &&
                           employee.last_name == last_name
                       );
                       let role = rolesArr.find(
                         (role) => role.title == res.title
                       );
-                      employees.updateEmployeeRole(role.role_id, employee.employee_id, res.name, res.title);
+                      employees.updateEmployeeRole(
+                        role.role_id,
+                        employee.employee_id,
+                        res.name,
+                        res.title
+                      );
                       setTimeout(ask, 200);
                     });
                 },
@@ -277,7 +283,8 @@ function ask() {
                       {
                         type: "list",
                         name: "name",
-                        message: "Which employee's manager would you like to update?",
+                        message:
+                          "Which employee's manager would you like to update?",
                         choices: function () {
                           let arr = employeesArr.map((employee) => {
                             let name = `${employee.first_name} ${employee.last_name}`;
@@ -302,7 +309,8 @@ function ask() {
                     .then((res) => {
                       let first_name = res.name.split(" ")[0];
                       let last_name = res.name.split(" ")[1];
-                      let employee = employeesArr.find(employee =>
+                      let employee = employeesArr.find(
+                        (employee) =>
                           employee.first_name == first_name &&
                           employee.last_name == last_name
                       );
@@ -319,60 +327,120 @@ function ask() {
                         );
                         manager = manager.employee_id;
                       }
-                      employees.updateEmployeeManager(manager, employee.employee_id, res.name, res.manager);
+                      employees.updateEmployeeManager(
+                        manager,
+                        employee.employee_id,
+                        res.name,
+                        res.manager
+                      );
                       setTimeout(ask, 200);
                     });
                 },
-                // deleteDept: function () {
-                //   console.log("--- Delete a department ---");
-                //   inquirer
-                //     .prompt({
-                //       type: "input",
-                //       name: "dept_id",
-                //       message:
-                //         "Enter the id of the department you would like to delete",
-                //       validate: function (input) {
-                //         return input !== "";
-                //       },
-                //     })
-                //     .then((res) => {
-                //       departments.deleteDepartment(res.dept_id);
-                //       setTimeout(ask, 200);
-                //     });
-                // },
-                // deleteRole: function () {
-                //   console.log("--- Delete a role ---");
-                //   inquirer
-                //     .prompt({
-                //       type: "input",
-                //       name: "role_id",
-                //       message: "Enter the id of the role you would like to delete",
-                //       validate: function (input) {
-                //         return input !== "";
-                //       },
-                //     })
-                //     .then((res) => {
-                //       roles.deleteRole(res.role_id);
-                //       setTimeout(ask, 200);
-                //     });
-                // },
-                // deleteEmployee: function () {
-                //   console.log("--- Delete an employee ---");
-                //   inquirer
-                //     .prompt({
-                //       type: "input",
-                //       name: "employee_id",
-                //       message:
-                //         "Enter the id of the employee you would like to delete",
-                //       validate: function (input) {
-                //         return input !== "";
-                //       },
-                //     })
-                //     .then((res) => {
-                //       employees.deleteEmployee(res.employee_id);
-                //       setTimeout(ask, 200);
-                //     });
-                // },
+                deleteDept: function () {
+                  console.log("--- Remove a department ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        name: "name",
+                        message: "Which department would you like to remove?",
+                        choices: function () {
+                          let arr = deptsArr.map((dept) => {
+                            return dept.dept_name;
+                          });
+                          return arr;
+                        },
+                      },
+                      {
+                        type: "confirm",
+                        name: "confirm",
+                        message:
+                          "Are you sure you want to remove this department?",
+                      },
+                    ])
+                    .then((res) => {
+                      if (res.confirm == false) {
+                        ask();
+                      } else {
+                        let dept = deptsArr.find(
+                          (dept) => dept.dept_name == res.name
+                        );
+                        departments.deleteDepartment(dept.dept_id, res.name);
+                        setTimeout(ask, 200);
+                      }
+                    });
+                },
+                deleteRole: function () {
+                  console.log("--- Remove a role ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        name: "title",
+                        message: "Which role would you like to remove?",
+                        choices: function () {
+                          let arr = rolesArr.map((role) => {
+                            return role.title;
+                          });
+                          return arr;
+                        },
+                      },
+                      {
+                        type: "confirm",
+                        name: "confirm",
+                        message: "Are you sure you want to remove this role?",
+                      },
+                    ])
+                    .then((res) => {
+                      if (res.confirm == false) {
+                        ask();
+                      } else {
+                        let role = rolesArr.find(
+                          (role) => role.title == res.title
+                        );
+                        roles.deleteRole(role.role_id, res.title);
+                        setTimeout(ask, 200);
+                      }
+                    });
+                },
+                deleteEmployee: function () {
+                  console.log("--- Remove an employee ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        name: "name",
+                        message: "Which employee would you like to remove?",
+                        choices: function () {
+                          let arr = employeesArr.map((employee) => {
+                            let name = `${employee.first_name} ${employee.last_name}`;
+                            return name;
+                          });
+                          return arr;
+                        },
+                      },
+                      {
+                        type: "confirm",
+                        name: "confirm",
+                        message: "Are you sure you want to remove this role?",
+                      },
+                    ])
+                    .then((res) => {
+                      if (res.confirm == false) {
+                        ask();
+                      } else {
+                        let first_name = res.name.split(" ")[0];
+                        let last_name = res.name.split(" ")[1];
+                        let employee = employeesArr.find(
+                          (employee) =>
+                            employee.first_name == first_name &&
+                            employee.last_name == last_name
+                        );
+                        employees.deleteEmployee(employee.employee_id, res.name);
+                        setTimeout(ask, 200);
+                      }
+                    });
+                },
                 exit: function () {
                   console.log("--- Exiting app ---");
                   process.exit();

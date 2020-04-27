@@ -29,13 +29,13 @@ class Roles {
       }
     );
   }
-  deleteRole(role_id) {
+  deleteRole(role_id, title) {
     this.connection.query(
       "DELETE FROM roles WHERE role_id = ?",
       role_id,
       function (err, res) {
         if (err) throw err;
-        console.log(chalk.green(`Role #${role_id} deleted`));
+        console.log(chalk.red(`"${title}" role removed`));
       }
     );
   }

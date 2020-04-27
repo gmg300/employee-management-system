@@ -36,7 +36,7 @@ class Employees {
       [role_id, employee_id],
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green(`${name}'s role was updated to "${title}"`));
+        console.log(chalk.yellow(`${name}'s role was updated to "${title}"`));
       });
   }
   updateEmployeeManager(manager_id, employee_id, name, manager) {
@@ -45,16 +45,16 @@ class Employees {
       [manager_id, employee_id],
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green(`${name}'s manager was updated to ${manager}`));
+        console.log(chalk.yellow(`${name}'s manager was updated to ${manager}`));
       });
   }
-  deleteEmployee(employee_id) {
+  deleteEmployee(employee_id, name) {
     this.connection.query(
       'DELETE FROM employees WHERE employee_id = ?',
       employee_id,
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green(`Employee #${employee_id} deleted`));
+        console.log(chalk.red(`${name} removed`));
       });
   }
 }

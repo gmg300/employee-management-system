@@ -39,13 +39,13 @@ class Departments {
         console.table(res);
       });
   }
-  deleteDepartment(dept_id) {
+  deleteDepartment(dept_id, name) {
     this.connection.query(
       "DELETE FROM departments WHERE dept_id = ?",
       dept_id,
       function (err, res) {
         if (err) throw err;
-        console.log(chalk.green(`Department #${dept_id} deleted`));
+        console.log(chalk.red(`"${name}" department removed`));
       }
     );
   }
