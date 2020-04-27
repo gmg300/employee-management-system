@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const cTable = require('console.table');
 
 class Roles {
   constructor(connection) {
@@ -9,14 +10,13 @@ class Roles {
       `SELECT 
         roles.role_id AS "ID",
         roles.title AS "Title",
-        roles.salary AS "Salary",
+        CONCAT('$', roles.salary) AS "Salary",
         departments.dept_name AS "Dept"
       FROM roles
       INNER JOIN departments ON roles.dept_id = departments.dept_id`, 
       function (err, res) {
       if (err) throw err;
-      console.log(chalk.cyan("--- Roles ---"));
-      console.table(res);
+      console.table("--- Roles ---", res);
     });
   }
   addRole(title, salary, dept_id) {

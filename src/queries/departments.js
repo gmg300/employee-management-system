@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const cTable = require('console.table');
 
 class Departments {
   constructor(connection) {
@@ -12,8 +13,7 @@ class Departments {
       FROM departments`,             
       function (err, res) {
         if (err) throw err;
-        console.log(chalk.cyan("--- Departments ---"));
-        console.table(res);
+        console.table("--- Departments ---", res);
       }
     );
   }
@@ -22,15 +22,14 @@ class Departments {
       `SELECT 
         departments.dept_id AS "ID",
         departments.dept_name AS "Dept",
-        SUM(roles.salary) AS "Budget"
+        CONCAT('$', SUM(roles.salary)) AS "Budget"
       FROM departments
       LEFT JOIN roles ON departments.dept_id = roles.dept_id
       INNER JOIN employees ON employees.role_id = roles.role_id
       GROUP BY ID`,
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.cyan("--- Department Budgets ---"));
-        console.table(res);
+        console.table("--- Department Budgets ---", res);
       });
   }
   addDepartment(dept_name) {

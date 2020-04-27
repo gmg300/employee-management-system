@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const cTable = require('console.table');
 
 class Employees {
   constructor(connection) {
@@ -12,16 +13,16 @@ class Employees {
         e1.last_name AS "Last",
         roles.title AS "Title",
         departments.dept_name AS "Dept",
-        roles.salary AS "Salary",
+        CONCAT('$', roles.salary) AS "Salary",
         CONCAT(e2.first_name, " ", e2.last_name) AS "Manager"
       FROM employees e1
       INNER JOIN roles ON e1.role_id = roles.role_id
       INNER JOIN departments ON roles.dept_id = departments.dept_id
-      LEFT JOIN employees e2 ON e1.manager_id = e2.employee_id`,
+      LEFT JOIN employees e2 ON e1.manager_id = e2.employee_id
+      ORDER BY ID`,
       function (err, res) {
         if (err) throw err;
-        console.log(chalk.cyan("--- Employees ---"));
-        console.table(res);
+        console.table("--- Employees ---", res);
       }
     );
   }
@@ -36,8 +37,7 @@ class Employees {
       ORDER BY Manager`,
       function (err, res) {
         if (err) throw err;
-        console.log(chalk.cyan("--- Employees By Manager ---"));
-        console.table(res);
+        console.table("--- Employees By Manager ---", res);
       }
     );
   }
