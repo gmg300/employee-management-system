@@ -7,7 +7,7 @@ class Departments {
   viewDepartments() {
     this.connection.query(
       `SELECT 
-        dept_id AS "Dept ID",
+        dept_id AS "ID",
         dept_name AS "Dept"
       FROM departments`,             
       function (err, res) {
@@ -16,6 +16,22 @@ class Departments {
         console.table(res);
       }
     );
+  }
+  viewDepartmentBudgets() {
+    this.connection.query(
+      `SELECT 
+        departments.dept_id AS "ID",
+        departments.dept_name AS "Dept",
+        SUM(roles.salary) AS "Budget"
+      FROM departments
+      LEFT JOIN roles ON departments.dept_id = roles.dept_id
+      INNER JOIN employees ON employees.role_id = roles.role_id
+      GROUP BY ID`,
+      function(err, res) {
+        if(err) throw err;
+        console.log(chalk.cyan("--- Department Budgets ---"));
+        console.table(res);
+      });
   }
   addDepartment(dept_name) {
     this.connection.query(
@@ -26,18 +42,6 @@ class Departments {
         console.log(chalk.green(`"${dept_name}" added to departments`));
       }
     );
-  }
-  viewBudgetByDepartment() {
-    this.connection.query(
-      `SELECT departments.dept_id, employees.first_name, employees.last_name, employees.employee_id, roles.role_id, roles.title, roles.salary
-      FROM employees
-      INNER JOIN roles ON employees.role_id = roles.role_id
-      LEFT JOIN departments ON roles.dept_id = departments.dept_id`,
-      function(err, res) {
-        if(err) throw err;
-        console.log(chalk.green("--- Departments ---"));
-        console.table(res);
-      });
   }
   deleteDepartment(dept_id, name) {
     this.connection.query(

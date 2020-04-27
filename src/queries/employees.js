@@ -7,7 +7,7 @@ class Employees {
   viewEmployees() {
     this.connection.query(
       `SELECT 
-        e1.employee_id AS "Employee ID",
+        e1.employee_id AS "ID",
         e1.first_name AS "First", 
         e1.last_name AS "Last",
         roles.title AS "Title",
