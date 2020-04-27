@@ -4,6 +4,21 @@ class Roles {
   constructor(connection) {
     this.connection = connection;
   }
+  viewRoles() {
+    this.connection.query(
+      `SELECT 
+        roles.role_id AS ID,
+        roles.title AS Title,
+        roles.salary AS Salary,
+        departments.dept_name AS Dept
+      FROM roles
+      INNER JOIN departments ON roles.dept_id = departments.dept_id`, 
+      function (err, res) {
+      if (err) throw err;
+      console.log(chalk.cyan("--- Roles ---"));
+      console.table(res);
+    });
+  }
   addRole(title, salary, dept_id) {
     this.connection.query(
       "INSERT INTO roles (title, salary, dept_id) VALUES (?, ?, ?)",
@@ -13,13 +28,6 @@ class Roles {
         console.log(chalk.green(`"${title}" added to roles`));
       }
     );
-  }
-  viewRoles() {
-    this.connection.query(`SELECT * FROM roles`, function (err, res) {
-      if (err) throw err;
-      console.log(chalk.cyan("--- Roles ---"));
-      console.table(res);
-    });
   }
   deleteRole(role_id) {
     this.connection.query(

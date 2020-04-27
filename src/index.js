@@ -16,7 +16,6 @@ const menu = [
     message: "What do you want to do?",
     choices: [
       new inquirer.Separator(chalk.cyan("--- View -----------")),
-      "View Company Overview",
       "View All Employees",
       "View All Roles",
       "View All Departments",
@@ -36,8 +35,6 @@ const menu = [
     ],
     filter: function (choice) {
       switch (choice) {
-        case "View Company Overview":
-          return "viewOverview";
         case "View All Departments":
           return "viewDepts";
         case "View All Roles":
@@ -96,25 +93,6 @@ function ask() {
             inquirer.prompt(menu).then(function (choice) {
               // Actions
               const actions = {
-                viewOverview: function () {
-                  connection.query(
-                    `SELECT 
-                      employees.employee_id AS id,
-                      employees.first_name AS first,
-                      employees.last_name AS last,
-                      roles.title, 
-                      roles.role_id AS job_id,
-                      roles.salary,
-                      employees.manager_id AS manager
-                      FROM employees
-                      INNER JOIN roles ON employees.role_id = roles.role_id`,
-                    function (err, res) {
-                      if (err) throw err;
-                      console.table(res);
-                      setTimeout(ask, 200);
-                    }
-                  );
-                },
                 viewDepts: function () {
                   departments.viewDepartments();
                   setTimeout(ask, 200);
@@ -288,7 +266,7 @@ function ask() {
                       let role = rolesArr.find(
                         (role) => role.title == res.title
                       );
-                      employees.updateEmployeeRole(role.role_id, employee.employee_id);
+                      employees.updateEmployeeRole(role.role_id, employee.employee_id, res.name, res.title);
                       setTimeout(ask, 200);
                     });
                 },
