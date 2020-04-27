@@ -22,10 +22,10 @@ class Employees {
         console.table(res);
       });
   }
-  updateEmployeeRole(role_id, manager_id, employee_id) {
+  updateEmployeeRole(role_id, employee_id) {
     this.connection.query(
-      'UPDATE employees SET role_id = ?, manager_id = ? WHERE employee_id = ?',
-      [role_id, manager_id, employee_id],
+      'UPDATE employees SET role_id = ? WHERE employee_id = ?',
+      [role_id, employee_id],
       function(err, res) {
         if(err) throw err;
         console.log(chalk.green(`Employee #${employee_id} role updated`));

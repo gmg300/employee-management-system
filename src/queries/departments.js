@@ -4,15 +4,6 @@ class Departments {
   constructor(connection) {
     this.connection = connection;
   }
-  addDepartment(dept_name) {
-    this.connection.query(
-      'INSERT INTO departments (dept_name) VALUES (?)',
-      dept_name,
-      function(err, res) {
-        if (err) throw err;
-        console.log(chalk.green(`"${dept_name}" added to departments`));
-      });
-  }
   viewDepartments() {
     this.connection.query(
       `SELECT * FROM departments`,
@@ -20,6 +11,15 @@ class Departments {
         if(err) throw err;
         console.log(chalk.cyan("--- Departments ---"));
         console.table(res);
+      });
+  }
+  addDepartment(dept_name) {
+    this.connection.query(
+      'INSERT INTO departments (dept_name) VALUES (?)',
+      dept_name,
+      function(err, res) {
+        if (err) throw err;
+        console.log(chalk.green(`"${dept_name}" added to departments`));
       });
   }
   // viewBudgetByDepartment() {
