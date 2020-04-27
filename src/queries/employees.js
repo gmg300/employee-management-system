@@ -39,13 +39,13 @@ class Employees {
         console.log(chalk.green(`${name}'s role was updated to "${title}"`));
       });
   }
-  updateEmployeeManager(manager_id, employee_id) {
+  updateEmployeeManager(manager_id, employee_id, name, manager) {
     this.connection.query(
       'UPDATE employees SET manager_id = ? WHERE employee_id = ?',
       [manager_id, employee_id],
       function(err, res) {
         if(err) throw err;
-        console.log(chalk.green(`Employee #${employee_id} manager updated`));
+        console.log(chalk.green(`${name}'s manager was updated to ${manager}`));
       });
   }
   deleteEmployee(employee_id) {

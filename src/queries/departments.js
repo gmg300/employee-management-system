@@ -27,18 +27,18 @@ class Departments {
       }
     );
   }
-  // viewBudgetByDepartment() {
-  //   this.connection.query(
-  //     `SELECT departments.dept_id, employees.first_name, employees.last_name, employees.employee_id, roles.role_id, roles.title, roles.salary
-  //     FROM employees
-  //     INNER JOIN roles ON employees.role_id = roles.role_id
-  //     LEFT JOIN departments ON roles.dept_id = departments.dept_id`,
-  //     function(err, res) {
-  //       if(err) throw err;
-  //       console.log(chalk.green("--- Departments ---"));
-  //       console.table(res);
-  //     });
-  // }
+  viewBudgetByDepartment() {
+    this.connection.query(
+      `SELECT departments.dept_id, employees.first_name, employees.last_name, employees.employee_id, roles.role_id, roles.title, roles.salary
+      FROM employees
+      INNER JOIN roles ON employees.role_id = roles.role_id
+      LEFT JOIN departments ON roles.dept_id = departments.dept_id`,
+      function(err, res) {
+        if(err) throw err;
+        console.log(chalk.green("--- Departments ---"));
+        console.table(res);
+      });
+  }
   deleteDepartment(dept_id) {
     this.connection.query(
       "DELETE FROM departments WHERE dept_id = ?",

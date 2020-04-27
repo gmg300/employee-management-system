@@ -16,16 +16,16 @@ const menu = [
     message: "What do you want to do?",
     choices: [
       new inquirer.Separator(chalk.cyan("--- View -----------")),
-      "View All Employees",
-      "View All Roles",
       "View All Departments",
+      "View All Roles",
+      "View All Employees",
       new inquirer.Separator(chalk.green("--- Add ------------")),
       "Add Department",
       "Add Role",
       "Add Employee",
       new inquirer.Separator(chalk.yellow("--- Update ---------")),
       "Update Employee Role",
-      // "Update Employee Manager",
+      "Update Employee Manager",
       // new inquirer.Separator(chalk.red("--- Delete ---------")),
       // "Delete Department",
       // "Delete Role",
@@ -270,36 +270,59 @@ function ask() {
                       setTimeout(ask, 200);
                     });
                 },
-                // updateEmployeeManager: function () {
-                //   console.log("--- Update an employee's manager ---");
-                //   inquirer
-                //     .prompt([
-                //       {
-                //         type: "input",
-                //         name: "employee_id",
-                //         message:
-                //           "Enter the id for the employee whose manage you would like to update",
-                //         validate: function (input) {
-                //           return input !== "";
-                //         },
-                //       },
-                //       {
-                //         type: "input",
-                //         name: "manager_id",
-                //         message: "Enter new manager id (enter nothing if null)",
-                //       },
-                //     ])
-                //     .then((res) => {
-                //       if (res.manager_id == "") {
-                //         res.manager_id = null;
-                //       }
-                //       employees.updateEmployeeManager(
-                //         res.manager_id,
-                //         res.employee_id
-                //       );
-                //       setTimeout(ask, 200);
-                //     });
-                // },
+                updateEmployeeManager: function () {
+                  console.log("--- Update an employee's manager ---");
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        name: "name",
+                        message: "Which employee's manager would you like to update?",
+                        choices: function () {
+                          let arr = employeesArr.map((employee) => {
+                            let name = `${employee.first_name} ${employee.last_name}`;
+                            return name;
+                          });
+                          return arr;
+                        },
+                      },
+                      {
+                        type: "list",
+                        name: "manager",
+                        message: "Who is the employee's manager?",
+                        choices: function () {
+                          let arr = managersArr.map((manager) => {
+                            let name = `${manager.first_name} ${manager.last_name}`;
+                            return name;
+                          });
+                          return ["none", ...arr];
+                        },
+                      },
+                    ])
+                    .then((res) => {
+                      let first_name = res.name.split(" ")[0];
+                      let last_name = res.name.split(" ")[1];
+                      let employee = employeesArr.find(employee =>
+                          employee.first_name == first_name &&
+                          employee.last_name == last_name
+                      );
+                      let manager;
+                      if (res.manager == "none") {
+                        manager = null;
+                      } else {
+                        let first_name = res.manager.split(" ")[0];
+                        let last_name = res.manager.split(" ")[1];
+                        manager = managersArr.find(
+                          (manager) =>
+                            manager.first_name == first_name &&
+                            manager.last_name == last_name
+                        );
+                        manager = manager.employee_id;
+                      }
+                      employees.updateEmployeeManager(manager, employee.employee_id, res.name, res.manager);
+                      setTimeout(ask, 200);
+                    });
+                },
                 // deleteDept: function () {
                 //   console.log("--- Delete a department ---");
                 //   inquirer
