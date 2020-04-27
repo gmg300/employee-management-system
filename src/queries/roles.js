@@ -7,10 +7,10 @@ class Roles {
   viewRoles() {
     this.connection.query(
       `SELECT 
-        roles.role_id AS ID,
-        roles.title AS Title,
-        roles.salary AS Salary,
-        departments.dept_name AS Dept
+        roles.role_id AS "Role ID",
+        roles.title AS "Title",
+        roles.salary AS "Salary",
+        departments.dept_name AS "Dept"
       FROM roles
       INNER JOIN departments ON roles.dept_id = departments.dept_id`, 
       function (err, res) {

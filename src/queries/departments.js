@@ -7,8 +7,8 @@ class Departments {
   viewDepartments() {
     this.connection.query(
       `SELECT 
-        dept_id AS ID,
-        dept_name AS Name
+        dept_id AS "Dept ID",
+        dept_name AS "Dept"
       FROM departments`,             
       function (err, res) {
         if (err) throw err;
@@ -52,5 +52,5 @@ class Departments {
 }
 
 module.exports = {
-  Departments,
+  Departments
 };

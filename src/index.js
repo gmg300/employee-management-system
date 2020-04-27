@@ -19,6 +19,7 @@ const menu = [
       "View All Departments",
       "View All Roles",
       "View All Employees",
+      "View Employees By Manager",
       new inquirer.Separator(chalk.green("--- Add ------------")),
       "Add Department",
       "Add Role",
@@ -41,6 +42,8 @@ const menu = [
           return "viewRoles";
         case "View All Employees":
           return "viewEmployees";
+        case "View Employees By Manager":
+          return "viewEmployeesByManager";
         case "Add Department":
           return "addDept";
         case "Add Role":
@@ -117,6 +120,15 @@ function ask() {
                     ask();
                   } else {
                     employees.viewEmployees();
+                    setTimeout(ask, 200);
+                  }
+                },
+                viewEmployeesByManager: function () {
+                  if (employeesArr.length < 1) {
+                    console.log(chalk.red("There are no employees to view"));
+                    ask();
+                  } else {
+                    employees.viewEmployeesByManager();
                     setTimeout(ask, 200);
                   }
                 },
