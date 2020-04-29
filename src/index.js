@@ -8,6 +8,22 @@ let departments = require("./queries/departments");
 let roles = require("./queries/roles");
 let employees = require("./queries/employees");
 
+// Async/Await Connection
+// (async function(){
+//   // const connection = require("../config/connection");
+//   await connection.query('SELECT * FROM employees');
+// });
+
+// MySQL Connection
+const connection = mysql.createConnection({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "password",
+  database: "employees_db",
+});
+
+
 // Main menu
 const menu = [
   {
@@ -96,7 +112,7 @@ function ask() {
             if (err) throw err;
             managersArr = resManagers;
             // Start main menu
-            inquirer.prompt(menu).then(function (choice) {
+            inquirer.prompt(menu).then(function(choice) {
               // Actions
               const actions = {
                 viewDepts: function () {
@@ -540,22 +556,11 @@ function ask() {
   });
 }
 
-// MySQL Connection
-const connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "password",
-  database: "employees_db",
-});
-
-// Connect to MySQL db and run app
+// Connect to MySQL db and start app
 connection.connect(function (err) {
   if (err) throw err;
   console.log(chalk.blue(`---------------------------------`));
-  console.log(chalk.blue(`|                               |`));
-  console.log(chalk.blue(`| ----- EMPLOYEE MANAGER ------ |`));
-  console.log(chalk.blue(`|                               |`));
+  console.log(chalk.blue(`|        EMPLOYEE TRACKER       |`));
   console.log(chalk.blue(`---------------------------------`));
   // Construct new classes
   departments = new departments.Departments(connection);
